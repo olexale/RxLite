@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>RxLite</id>
+        <version>0.0.1</version>
+        <authors>Olexandr Leuschenko</authors>
+        <projectUrl>https://github.com/OlexaLe/RxLite</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Simplified version of the ReactiveUI framework
+Project main goal is to keep limited subset of ReactiveUI features:
+- this.WhenAny, this.WhenAnyValue, this.WhenAnyObservable
+- ObservableAsPropertyHelper, ToProperty
+- ReactiveObject, this.RaiseAndSetIfChanged
+- ReactiveCommand, ReactiveAsyncCommand
+- ReactiveList</description>
+        <tags>Rx Reactive</tags>
+        <dependencies>
+            <dependency id="Rx-Interfaces" version="2.2.5" />
+            <dependency id="Rx-Core" version="2.2.5" />
+            <dependency id="Rx-Linq" version="2.2.5" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="..\RxLite\bin\Release\RxLite.dll" target="lib\RxLite.dll" />
+    </files>
+</package>
