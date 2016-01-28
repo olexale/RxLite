@@ -7,21 +7,16 @@ ReactiveUI is awesome, but it looks a little bit overcomplicated for some projec
 There are no reasons to have all that framework things and keep platform-specific libraries implementations in case if you just want to use in your ViewModels such a cool things like WhenAny, ObservableAsPropertyHelper and ReactiveCommand. So I just removed a lot of code and made things work afterwards.
 
 ## Project goals
-Project main goal is to keep keep limited subset of ReactiveUI features:
+Project main goal is to keep very limited subset of ReactiveUI features:
 * this.WhenAny, this.WhenAnyValue, this.WhenAnyObservable
 * ObservableAsPropertyHelper, ToProperty
 * ReactiveObject, this.RaiseAndSetIfChanged
 * ReactiveCommand, ReactiveAsyncCommand
-* ReactiveList
 
 Things not included in this project:
+* ReactiveList
 * Any IoC (especially Splat)
 * Any logging frameworks
 * MessageBus
 * ViewLocator, IViewFor
 * Any platform-specific things
-
-## TODO
-* Port TestScheduler for nicer unit tests
-* Write more unit tests
-* Write more samples
