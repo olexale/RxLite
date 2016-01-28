@@ -8,12 +8,8 @@ namespace RxLite
     public static class OAPHCreationHelperMixin
     {
         private static ObservableAsPropertyHelper<TRet> ObservableToProperty<TObj, TRet>(
-            this TObj This,
-            IObservable<TRet> observable,
-            Expression<Func<TObj, TRet>> property,
-            TRet initialValue = default(TRet),
-            IScheduler scheduler = null)
-            where TObj : IReactiveObject
+            this TObj This, IObservable<TRet> observable, Expression<Func<TObj, TRet>> property,
+            TRet initialValue = default(TRet), IScheduler scheduler = null) where TObj : IReactiveObject
         {
             Contract.Requires(This != null);
             Contract.Requires(observable != null);
@@ -27,10 +23,9 @@ namespace RxLite
             }
 
             var name = expression.GetMemberInfo().Name;
-            var ret = new ObservableAsPropertyHelper<TRet>(observable,
-                _ => This.raisePropertyChanged(name),
-                _ => This.raisePropertyChanging(name),
-                initialValue, scheduler);
+            var ret = new ObservableAsPropertyHelper<TRet>(
+                observable, _ => This.raisePropertyChanged(name), _ => This.raisePropertyChanging(name), initialValue,
+                scheduler);
 
             return ret;
         }
@@ -56,12 +51,8 @@ namespace RxLite
         ///     backing field for your property.
         /// </returns>
         public static ObservableAsPropertyHelper<TRet> ToProperty<TObj, TRet>(
-            this IObservable<TRet> This,
-            TObj source,
-            Expression<Func<TObj, TRet>> property,
-            TRet initialValue = default(TRet),
-            IScheduler scheduler = null)
-            where TObj : IReactiveObject
+            this IObservable<TRet> This, TObj source, Expression<Func<TObj, TRet>> property,
+            TRet initialValue = default(TRet), IScheduler scheduler = null) where TObj : IReactiveObject
         {
             return source.ObservableToProperty(This, property, initialValue, scheduler);
         }
@@ -87,12 +78,8 @@ namespace RxLite
         ///     backing field for your property.
         /// </returns>
         public static ObservableAsPropertyHelper<TRet> ToProperty<TObj, TRet>(
-            this IObservable<TRet> This,
-            TObj source,
-            Expression<Func<TObj, TRet>> property,
-            out ObservableAsPropertyHelper<TRet> result,
-            TRet initialValue = default(TRet),
-            IScheduler scheduler = null)
+            this IObservable<TRet> This, TObj source, Expression<Func<TObj, TRet>> property,
+            out ObservableAsPropertyHelper<TRet> result, TRet initialValue = default(TRet), IScheduler scheduler = null)
             where TObj : ReactiveObject
         {
             var ret = source.ObservableToProperty(This, property, initialValue, scheduler);

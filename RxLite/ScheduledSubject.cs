@@ -16,54 +16,55 @@ namespace RxLite
 
         private int _observerRefCount;
 
-        public ScheduledSubject(IScheduler scheduler, IObserver<T> defaultObserver = null,
-            ISubject<T> defaultSubject = null)
+        public ScheduledSubject(
+            IScheduler scheduler, IObserver<T> defaultObserver = null, ISubject<T> defaultSubject = null)
         {
-            _scheduler = scheduler;
-            _defaultObserver = defaultObserver;
-            _subject = defaultSubject ?? new Subject<T>();
+            this._scheduler = scheduler;
+            this._defaultObserver = defaultObserver;
+            this._subject = defaultSubject ?? new Subject<T>();
 
             if (defaultObserver != null)
             {
-                _defaultObserverSub = _subject.ObserveOn(_scheduler).Subscribe(_defaultObserver);
+                this._defaultObserverSub = this._subject.ObserveOn(this._scheduler).Subscribe(this._defaultObserver);
             }
         }
 
         public void OnCompleted()
         {
-            _subject.OnCompleted();
+            this._subject.OnCompleted();
         }
 
         public void OnError(Exception error)
         {
-            _subject.OnError(error);
+            this._subject.OnError(error);
         }
 
         public void OnNext(T value)
         {
-            _subject.OnNext(value);
+            this._subject.OnNext(value);
         }
 
         public IDisposable Subscribe(IObserver<T> observer)
         {
-            Interlocked.Exchange(ref _defaultObserverSub, Disposable.Empty).Dispose();
+            Interlocked.Exchange(ref this._defaultObserverSub, Disposable.Empty).Dispose();
 
-            Interlocked.Increment(ref _observerRefCount);
+            Interlocked.Increment(ref this._observerRefCount);
 
             return new CompositeDisposable(
-                _subject.ObserveOn(_scheduler).Subscribe(observer),
-                Disposable.Create(() =>
-                {
-                    if (Interlocked.Decrement(ref _observerRefCount) <= 0 && _defaultObserver != null)
-                    {
-                        _defaultObserverSub = _subject.ObserveOn(_scheduler).Subscribe(_defaultObserver);
-                    }
-                }));
+                this._subject.ObserveOn(this._scheduler).Subscribe(observer), Disposable.Create(
+                    () =>
+                        {
+                            if (Interlocked.Decrement(ref this._observerRefCount) <= 0 && this._defaultObserver != null)
+                            {
+                                this._defaultObserverSub =
+                                    this._subject.ObserveOn(this._scheduler).Subscribe(this._defaultObserver);
+                            }
+                        }));
         }
 
         public void Dispose()
         {
-            (_subject as IDisposable)?.Dispose();
+            (this._subject as IDisposable)?.Dispose();
         }
     }
 }

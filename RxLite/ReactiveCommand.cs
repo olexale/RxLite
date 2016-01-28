@@ -61,8 +61,8 @@ namespace RxLite
         ///     A ReactiveCommand which returns all items that are created via
         ///     calling executeAsync as a single stream.
         /// </returns>
-        public static ReactiveCommand<T> CreateAsyncObservable<T>(IObservable<bool> canExecute,
-            Func<object, IObservable<T>> executeAsync, IScheduler scheduler = null)
+        public static ReactiveCommand<T> CreateAsyncObservable<T>(
+            IObservable<bool> canExecute, Func<object, IObservable<T>> executeAsync, IScheduler scheduler = null)
         {
             return new ReactiveCommand<T>(canExecute, executeAsync, scheduler);
         }
@@ -86,8 +86,8 @@ namespace RxLite
         ///     A ReactiveCommand which returns all items that are created via
         ///     calling executeAsync as a single stream.
         /// </returns>
-        public static ReactiveCommand<T> CreateAsyncObservable<T>(Func<object, IObservable<T>> executeAsync,
-            IScheduler scheduler = null)
+        public static ReactiveCommand<T> CreateAsyncObservable<T>(
+            Func<object, IObservable<T>> executeAsync, IScheduler scheduler = null)
         {
             return new ReactiveCommand<T>(Observable.Return(true), executeAsync, scheduler);
         }
@@ -116,8 +116,8 @@ namespace RxLite
         ///     A ReactiveCommand which returns all items that are created via
         ///     calling executeAsync as a single stream.
         /// </returns>
-        public static ReactiveCommand<T> CreateAsyncTask<T>(IObservable<bool> canExecute,
-            Func<object, Task<T>> executeAsync, IScheduler scheduler = null)
+        public static ReactiveCommand<T> CreateAsyncTask<T>(
+            IObservable<bool> canExecute, Func<object, Task<T>> executeAsync, IScheduler scheduler = null)
         {
             return new ReactiveCommand<T>(canExecute, x => executeAsync(x).ToObservable(), scheduler);
         }
@@ -142,8 +142,8 @@ namespace RxLite
         ///     A ReactiveCommand which returns all items that are created via
         ///     calling executeAsync as a single stream.
         /// </returns>
-        public static ReactiveCommand<T> CreateAsyncTask<T>(Func<object, Task<T>> executeAsync,
-            IScheduler scheduler = null)
+        public static ReactiveCommand<T> CreateAsyncTask<T>(
+            Func<object, Task<T>> executeAsync, IScheduler scheduler = null)
         {
             return new ReactiveCommand<T>(Observable.Return(true), x => executeAsync(x).ToObservable(), scheduler);
         }
@@ -168,7 +168,8 @@ namespace RxLite
         ///     A ReactiveCommand which returns all items that are created via
         ///     calling executeAsync as a single stream.
         /// </returns>
-        public static ReactiveCommand<Unit> CreateAsyncTask(Func<object, Task> executeAsync, IScheduler scheduler = null)
+        public static ReactiveCommand<Unit> CreateAsyncTask(
+            Func<object, Task> executeAsync, IScheduler scheduler = null)
         {
             return new ReactiveCommand<Unit>(Observable.Return(true), x => executeAsync(x).ToObservable(), scheduler);
         }
@@ -197,8 +198,8 @@ namespace RxLite
         ///     A ReactiveCommand which returns all items that are created via
         ///     calling executeAsync as a single stream.
         /// </returns>
-        public static ReactiveCommand<Unit> CreateAsyncTask(IObservable<bool> canExecute,
-            Func<object, Task> executeAsync, IScheduler scheduler = null)
+        public static ReactiveCommand<Unit> CreateAsyncTask(
+            IObservable<bool> canExecute, Func<object, Task> executeAsync, IScheduler scheduler = null)
         {
             return new ReactiveCommand<Unit>(canExecute, x => executeAsync(x).ToObservable(), scheduler);
         }
@@ -227,8 +228,9 @@ namespace RxLite
         ///     A ReactiveCommand which returns all items that are created via
         ///     calling executeAsync as a single stream.
         /// </returns>
-        public static ReactiveCommand<T> CreateAsyncTask<T>(IObservable<bool> canExecute,
-            Func<object, CancellationToken, Task<T>> executeAsync, IScheduler scheduler = null)
+        public static ReactiveCommand<T> CreateAsyncTask<T>(
+            IObservable<bool> canExecute, Func<object, CancellationToken, Task<T>> executeAsync,
+            IScheduler scheduler = null)
         {
             return new ReactiveCommand<T>(canExecute, x => Observable.StartAsync(ct => executeAsync(x, ct)), scheduler);
         }
@@ -253,11 +255,11 @@ namespace RxLite
         ///     A ReactiveCommand which returns all items that are created via
         ///     calling executeAsync as a single stream.
         /// </returns>
-        public static ReactiveCommand<T> CreateAsyncTask<T>(Func<object, CancellationToken, Task<T>> executeAsync,
-            IScheduler scheduler = null)
+        public static ReactiveCommand<T> CreateAsyncTask<T>(
+            Func<object, CancellationToken, Task<T>> executeAsync, IScheduler scheduler = null)
         {
-            return new ReactiveCommand<T>(Observable.Return(true), x => Observable.StartAsync(ct => executeAsync(x, ct)),
-                scheduler);
+            return new ReactiveCommand<T>(
+                Observable.Return(true), x => Observable.StartAsync(ct => executeAsync(x, ct)), scheduler);
         }
 
         /// <summary>
@@ -284,11 +286,11 @@ namespace RxLite
         ///     A ReactiveCommand which returns all items that are created via
         ///     calling executeAsync as a single stream.
         /// </returns>
-        public static ReactiveCommand<Unit> CreateAsyncTask(Func<object, CancellationToken, Task> executeAsync,
-            IScheduler scheduler = null)
+        public static ReactiveCommand<Unit> CreateAsyncTask(
+            Func<object, CancellationToken, Task> executeAsync, IScheduler scheduler = null)
         {
-            return new ReactiveCommand<Unit>(Observable.Return(true),
-                x => Observable.StartAsync(ct => executeAsync(x, ct)), scheduler);
+            return new ReactiveCommand<Unit>(
+                Observable.Return(true), x => Observable.StartAsync(ct => executeAsync(x, ct)), scheduler);
         }
 
         /// <summary>
@@ -311,11 +313,12 @@ namespace RxLite
         ///     A ReactiveCommand which returns all items that are created via
         ///     calling executeAsync as a single stream.
         /// </returns>
-        public static ReactiveCommand<Unit> CreateAsyncTask(IObservable<bool> canExecute,
-            Func<object, CancellationToken, Task> executeAsync, IScheduler scheduler = null)
+        public static ReactiveCommand<Unit> CreateAsyncTask(
+            IObservable<bool> canExecute, Func<object, CancellationToken, Task> executeAsync,
+            IScheduler scheduler = null)
         {
-            return new ReactiveCommand<Unit>(canExecute, x => Observable.StartAsync(ct => executeAsync(x, ct)),
-                scheduler);
+            return new ReactiveCommand<Unit>(
+                canExecute, x => Observable.StartAsync(ct => executeAsync(x, ct)), scheduler);
         }
 
         /// <summary>
@@ -329,18 +332,25 @@ namespace RxLite
         ///     parent command can execute
         /// </param>
         /// <param name="commands">The commands to combine.</param>
-        public static ReactiveCommand<object> CreateCombined(IObservable<bool> canExecute,
-            params IReactiveCommand[] commands)
+        public static ReactiveCommand<object> CreateCombined(
+            IObservable<bool> canExecute, params IReactiveCommand[] commands)
         {
-            var childrenCanExecute = commands
-                .Select(x => x.CanExecuteObservable)
-                .CombineLatest(latestCanExecute => latestCanExecute.All(x => x));
+            var childrenCanExecute =
+                commands.Select(x => x.CanExecuteObservable)
+                        .CombineLatest(latestCanExecute => latestCanExecute.All(x => x));
 
-            var canExecuteSum = canExecute.StartWith(true).CombineLatest(childrenCanExecute,
-                (parent, child) => parent && child);
+            var canExecuteSum = canExecute.StartWith(true)
+                                          .CombineLatest(childrenCanExecute, (parent, child) => parent && child);
 
             var ret = Create(canExecuteSum);
-            ret.Subscribe(x => commands.ForEach(cmd => cmd.Execute(x)));
+            ret.Subscribe(
+                x =>
+                    {
+                        foreach (var command in commands)
+                        {
+                            command.Execute(x);
+                        }
+                    });
             return ret;
         }
 
@@ -383,8 +393,10 @@ namespace RxLite
         {
             add
             {
-                if (canExecuteDisp == null)
-                    canExecuteDisp = canExecute.Connect();
+                if (this.canExecuteDisp == null)
+                {
+                    this.canExecuteDisp = this.canExecute.Connect();
+                }
                 CanExecuteChangedEventManager.AddHandler(this, value);
             }
             remove { CanExecuteChangedEventManager.RemoveHandler(this, value); }
@@ -409,33 +421,34 @@ namespace RxLite
         /// <summary>
         ///     Don't use this, use ReactiveCommand.CreateXYZ instead
         /// </summary>
-        internal ReactiveCommand(IObservable<bool> canExecute, Func<object, IObservable<T>> executeAsync,
-            IScheduler scheduler = null)
+        internal ReactiveCommand(
+            IObservable<bool> canExecute, Func<object, IObservable<T>> executeAsync, IScheduler scheduler = null)
         {
             this.scheduler = scheduler ?? RxApp.MainThreadScheduler;
             this.executeAsync = executeAsync;
 
-            this.canExecute = canExecute.CombineLatest(isExecuting.StartWith(false), (ce, ie) => ce && !ie)
-                .Catch<bool, Exception>(ex =>
-                {
-                    exceptions.OnNext(ex);
-                    return Observable.Return(false);
-                })
-                .Do(x =>
-                {
-                    var fireCanExecuteChanged = (canExecuteLatest != x);
-                    canExecuteLatest = x;
+            this.canExecute =
+                canExecute.CombineLatest(this.isExecuting.StartWith(false), (ce, ie) => ce && !ie)
+                          .Catch<bool, Exception>(
+                              ex =>
+                                  {
+                                      this.exceptions.OnNext(ex);
+                                      return Observable.Return(false);
+                                  }).Do(
+                                      x =>
+                                          {
+                                              var fireCanExecuteChanged = (this.canExecuteLatest != x);
+                                              this.canExecuteLatest = x;
 
-                    if (fireCanExecuteChanged)
-                    {
-                        raiseCanExecuteChanged(EventArgs.Empty);
-                    }
-                })
-                .Publish();
+                                              if (fireCanExecuteChanged)
+                                              {
+                                                  this.raiseCanExecuteChanged(EventArgs.Empty);
+                                              }
+                                          }).Publish();
 
-            ThrownExceptions =
-                exceptions =
-                    new ScheduledSubject<Exception>(CurrentThreadScheduler.Instance, RxApp.DefaultExceptionHandler);
+            this.ThrownExceptions =
+                this.exceptions =
+                new ScheduledSubject<Exception>(CurrentThreadScheduler.Instance, RxApp.DefaultExceptionHandler);
         }
 
         /// <summary>
@@ -451,35 +464,36 @@ namespace RxLite
         /// <param name="parameter">Don't use this.</param>
         public IObservable<T> ExecuteAsync(object parameter = null)
         {
-            var ret = Observable.Create<T>(subj =>
-            {
-                if (Interlocked.Increment(ref inflightCount) == 1)
-                {
-                    isExecuting.OnNext(true);
-                }
-
-                var decrement = new SerialDisposable
-                {
-                    Disposable = Disposable.Create(() =>
+            var ret = Observable.Create<T>(
+                subj =>
                     {
-                        if (Interlocked.Decrement(ref inflightCount) == 0)
+                        if (Interlocked.Increment(ref this.inflightCount) == 1)
                         {
-                            isExecuting.OnNext(false);
+                            this.isExecuting.OnNext(true);
                         }
-                    })
-                };
 
-                var disp = ExecuteAsyncSafe(parameter)
-                    .ObserveOn(scheduler)
-                    .Do(
-                        _ => { },
-                        e => decrement.Disposable = Disposable.Empty,
-                        () => decrement.Disposable = Disposable.Empty)
-                    .Do(executeResults.OnNext, exceptions.OnNext)
-                    .Subscribe(subj);
+                        var decrement = new SerialDisposable {
+                            Disposable = Disposable.Create(
+                                () =>
+                                    {
+                                        if (Interlocked.Decrement(ref this.inflightCount) == 0)
+                                        {
+                                            this.isExecuting.OnNext(false);
+                                        }
+                                    })
+                        };
 
-                return new CompositeDisposable(disp, decrement);
-            });
+                        var disp =
+                            this.ExecuteAsyncSafe(parameter)
+                                .ObserveOn(this.scheduler)
+                                .Do(
+                                    _ => { }, e => decrement.Disposable = Disposable.Empty,
+                                    () => decrement.Disposable = Disposable.Empty)
+                                .Do(this.executeResults.OnNext, this.exceptions.OnNext)
+                                .Subscribe(subj);
+
+                        return new CompositeDisposable(disp, decrement);
+                    });
 
             return ret.Publish().RefCount();
         }
@@ -490,7 +504,7 @@ namespace RxLite
 
             try
             {
-                ret = executeAsync(parameter);
+                ret = this.executeAsync(parameter);
             }
             catch (Exception ex)
             {
@@ -513,7 +527,7 @@ namespace RxLite
         /// </param>
         public Task<T> ExecuteAsyncTask(object parameter = null, CancellationToken ct = default(CancellationToken))
         {
-            return ExecuteAsync(parameter).ToTask(ct);
+            return this.ExecuteAsync(parameter).ToTask(ct);
         }
 
         /// <summary>
@@ -532,36 +546,41 @@ namespace RxLite
         {
             get
             {
-                var ret = canExecute.StartWith(canExecuteLatest).DistinctUntilChanged();
+                var ret = this.canExecute.StartWith(this.canExecuteLatest).DistinctUntilChanged();
 
-                if (canExecuteDisp != null)
-                    return ret;
-
-                return Observable.Create<bool>(subj =>
+                if (this.canExecuteDisp != null)
                 {
-                    var disp = ret.Subscribe(subj);
+                    return ret;
+                }
 
-                    // NB: We intentionally leak the CanExecute disconnect, it's
-                    // cleaned up by the global Dispose. This is kind of a
-                    // "Lazy Subscription" to CanExecute by the command itself.
-                    canExecuteDisp = canExecute.Connect();
-                    return disp;
-                });
+                return Observable.Create<bool>(
+                    subj =>
+                        {
+                            var disp = ret.Subscribe(subj);
+
+                            // NB: We intentionally leak the CanExecute disconnect, it's
+                            // cleaned up by the global Dispose. This is kind of a
+                            // "Lazy Subscription" to CanExecute by the command itself.
+                            this.canExecuteDisp = this.canExecute.Connect();
+                            return disp;
+                        });
             }
         }
 
-        public IObservable<bool> IsExecuting => isExecuting.StartWith(inflightCount > 0);
+        public IObservable<bool> IsExecuting => this.isExecuting.StartWith(this.inflightCount > 0);
 
         public IDisposable Subscribe(IObserver<T> observer)
         {
-            return executeResults.Subscribe(observer);
+            return this.executeResults.Subscribe(observer);
         }
 
         public bool CanExecute(object parameter)
         {
-            if (canExecuteDisp == null)
-                canExecuteDisp = canExecute.Connect();
-            return canExecuteLatest;
+            if (this.canExecuteDisp == null)
+            {
+                this.canExecuteDisp = this.canExecute.Connect();
+            }
+            return this.canExecuteLatest;
         }
 
         /// <summary>
@@ -570,12 +589,12 @@ namespace RxLite
         /// </summary>
         public void Execute(object parameter)
         {
-            ExecuteAsync(parameter).Catch(Observable.Empty<T>()).Subscribe();
+            this.ExecuteAsync(parameter).Catch(Observable.Empty<T>()).Subscribe();
         }
 
         public virtual void Dispose()
         {
-            var disp = Interlocked.Exchange(ref canExecuteDisp, null);
+            var disp = Interlocked.Exchange(ref this.canExecuteDisp, null);
             disp?.Dispose();
         }
     }
@@ -611,13 +630,14 @@ namespace RxLite
         /// </returns>
         public static IDisposable InvokeCommand<T>(this IObservable<T> This, ICommand command)
         {
-            return This.Throttle(
-                x =>
-                    Observable.FromEventPattern(h => command.CanExecuteChanged += h, h => command.CanExecuteChanged -= h)
-                        .Select(_ => Unit.Default)
-                        .StartWith(Unit.Default)
-                        .Where(_ => command.CanExecute(x)))
-                .Subscribe(x => { command.Execute(x); });
+            return
+                This.Throttle(
+                    x =>
+                    Observable.FromEventPattern(
+                        h => command.CanExecuteChanged += h, h => command.CanExecuteChanged -= h)
+                              .Select(_ => Unit.Default)
+                              .StartWith(Unit.Default)
+                              .Where(_ => command.CanExecute(x))).Subscribe(x => { command.Execute(x); });
         }
 
         /// <summary>
@@ -632,10 +652,11 @@ namespace RxLite
         /// </returns>
         public static IDisposable InvokeCommand<T, TResult>(this IObservable<T> This, IReactiveCommand<TResult> command)
         {
-            return This.Throttle(x => command.CanExecuteObservable.StartWith(command.CanExecute(x)).Where(b => b))
-                .Select(x => command.ExecuteAsync(x).Catch(Observable.Empty<TResult>()))
-                .Switch()
-                .Subscribe();
+            return
+                This.Throttle(x => command.CanExecuteObservable.StartWith(command.CanExecute(x)).Where(b => b))
+                    .Select(x => command.ExecuteAsync(x).Catch(Observable.Empty<TResult>()))
+                    .Switch()
+                    .Subscribe();
         }
 
         /// <summary>
@@ -649,17 +670,19 @@ namespace RxLite
         ///     An object that when disposes, disconnects the Observable
         ///     from the command.
         /// </returns>
-        public static IDisposable InvokeCommand<T, TTarget>(this IObservable<T> This, TTarget target,
-            Expression<Func<TTarget, ICommand>> commandProperty)
+        public static IDisposable InvokeCommand<T, TTarget>(
+            this IObservable<T> This, TTarget target, Expression<Func<TTarget, ICommand>> commandProperty)
         {
-            return This.CombineLatest(target.WhenAnyValue(commandProperty), (val, cmd) => new {val, cmd})
-                .Throttle(
-                    x =>
-                        Observable.FromEventPattern(h => x.cmd.CanExecuteChanged += h, h => x.cmd.CanExecuteChanged -= h)
-                            .Select(_ => Unit.Default)
-                            .StartWith(Unit.Default)
-                            .Where(_ => x.cmd.CanExecute(x.val)))
-                .Subscribe(x => { x.cmd.Execute(x.val); });
+            return
+                This.CombineLatest(target.WhenAnyValue(commandProperty), (val, cmd) => new { val, cmd })
+                    .Throttle(
+                        x =>
+                        Observable.FromEventPattern(
+                            h => x.cmd.CanExecuteChanged += h, h => x.cmd.CanExecuteChanged -= h)
+                                  .Select(_ => Unit.Default)
+                                  .StartWith(Unit.Default)
+                                  .Where(_ => x.cmd.CanExecute(x.val)))
+                    .Subscribe(x => { x.cmd.Execute(x.val); });
         }
 
         /// <summary>
@@ -673,14 +696,16 @@ namespace RxLite
         ///     An object that when disposes, disconnects the Observable
         ///     from the command.
         /// </returns>
-        public static IDisposable InvokeCommand<T, TResult, TTarget>(this IObservable<T> This, TTarget target,
+        public static IDisposable InvokeCommand<T, TResult, TTarget>(
+            this IObservable<T> This, TTarget target,
             Expression<Func<TTarget, IReactiveCommand<TResult>>> commandProperty)
         {
-            return This.CombineLatest(target.WhenAnyValue(commandProperty), (val, cmd) => new {val, cmd})
-                .Throttle(x => x.cmd.CanExecuteObservable.StartWith(x.cmd.CanExecute(x.val)).Where(b => b))
-                .Select(x => x.cmd.ExecuteAsync(x.val).Catch(Observable.Empty<TResult>()))
-                .Switch()
-                .Subscribe();
+            return
+                This.CombineLatest(target.WhenAnyValue(commandProperty), (val, cmd) => new { val, cmd })
+                    .Throttle(x => x.cmd.CanExecuteObservable.StartWith(x.cmd.CanExecute(x.val)).Where(b => b))
+                    .Select(x => x.cmd.ExecuteAsync(x.val).Catch(Observable.Empty<TResult>()))
+                    .Switch()
+                    .Subscribe();
         }
 
         /// <summary>
@@ -688,8 +713,8 @@ namespace RxLite
         ///     in the same call. Equivalent to Subscribing to the command, except
         ///     there's no way to release your Subscription but that's probably fine.
         /// </summary>
-        public static ReactiveCommand<T> OnExecuteCompleted<T>(this ReactiveCommand<T> This, Action<T> onNext,
-            Action<Exception> onError = null)
+        public static ReactiveCommand<T> OnExecuteCompleted<T>(
+            this ReactiveCommand<T> This, Action<T> onNext, Action<Exception> onError = null)
         {
             if (onError != null)
             {

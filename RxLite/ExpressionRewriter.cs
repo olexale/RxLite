@@ -13,21 +13,21 @@ namespace RxLite
             switch (node.NodeType)
             {
                 case ExpressionType.ArrayIndex:
-                    return VisitBinary((BinaryExpression) node);
+                    return this.VisitBinary((BinaryExpression)node);
                 case ExpressionType.ArrayLength:
-                    return VisitUnary((UnaryExpression) node);
+                    return this.VisitUnary((UnaryExpression)node);
                 case ExpressionType.Call:
-                    return VisitMethodCall((MethodCallExpression) node);
+                    return this.VisitMethodCall((MethodCallExpression)node);
                 case ExpressionType.Index:
-                    return VisitIndex((IndexExpression) node);
+                    return this.VisitIndex((IndexExpression)node);
                 case ExpressionType.MemberAccess:
-                    return VisitMember((MemberExpression) node);
+                    return this.VisitMember((MemberExpression)node);
                 case ExpressionType.Parameter:
-                    return VisitParameter((ParameterExpression) node);
+                    return this.VisitParameter((ParameterExpression)node);
                 case ExpressionType.Constant:
-                    return VisitConstant((ConstantExpression) node);
+                    return this.VisitConstant((ConstantExpression)node);
                 case ExpressionType.Convert:
-                    return VisitUnary((UnaryExpression) node);
+                    return this.VisitUnary((UnaryExpression)node);
                 default:
                     throw new NotSupportedException($"Unsupported expression type: '{node.NodeType}'");
             }
@@ -40,11 +40,11 @@ namespace RxLite
                 throw new NotSupportedException("Array index expressions are only supported with constants.");
             }
 
-            var left = Visit(node.Left);
-            var right = Visit(node.Right);
+            var left = this.Visit(node.Left);
+            var right = this.Visit(node.Right);
 
             // Translate arrayindex into normal index expression
-            return Expression.MakeIndex(left, left.Type.GetRuntimeProperty("Item"), new[] {right});
+            return Expression.MakeIndex(left, left.Type.GetRuntimeProperty("Item"), new[] { right });
         }
 
         protected override Expression VisitUnary(UnaryExpression node)
@@ -52,13 +52,13 @@ namespace RxLite
             switch (node.NodeType)
             {
                 case ExpressionType.ArrayLength:
-                    var expression = Visit(node.Operand);
+                    var expression = this.Visit(node.Operand);
                     //translate arraylength into normal member expression
                     return Expression.MakeMemberAccess(expression, expression.Type.GetRuntimeProperty("Length"));
                 case ExpressionType.Convert:
-                    return Visit(node.Operand);
+                    return this.Visit(node.Operand);
                 default:
-                    return node.Update(Visit(node.Operand));
+                    return node.Update(this.Visit(node.Operand));
             }
         }
 
@@ -70,8 +70,8 @@ namespace RxLite
                 throw new NotSupportedException("Index expressions are only supported with constants.");
             }
 
-            var instance = Visit(node.Object);
-            IEnumerable<Expression> arguments = Visit(node.Arguments);
+            var instance = this.Visit(node.Object);
+            IEnumerable<Expression> arguments = this.Visit(node.Arguments);
 
             // Translate call to get_Item into normal index expression
             return Expression.MakeIndex(instance, instance.Type.GetRuntimeProperty("Item"), arguments);

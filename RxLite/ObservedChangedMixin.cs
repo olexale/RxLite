@@ -43,8 +43,8 @@ namespace RxLite
         ///     True if the entire expression was able to be followed,
         ///     false otherwise
         /// </returns>
-        internal static bool TryGetValue<TSender, TValue>(this IObservedChange<TSender, TValue> This,
-            out TValue changeValue)
+        internal static bool TryGetValue<TSender, TValue>(
+            this IObservedChange<TSender, TValue> This, out TValue changeValue)
         {
             if (!Equals(This.Value, default(TValue)))
             {
@@ -52,8 +52,8 @@ namespace RxLite
                 return true;
             }
 
-            return Reflection.TryGetValueForPropertyChain(out changeValue, This.Sender,
-                This.Expression.GetExpressionChain());
+            return Reflection.TryGetValueForPropertyChain(
+                out changeValue, This.Sender, This.Expression.GetExpressionChain());
         }
 
         /// <summary>
@@ -65,12 +65,10 @@ namespace RxLite
         /// <param name="target">The target object to apply the change to.</param>
         /// <param name="property">The target property to apply the change to.</param>
         internal static void SetValueToProperty<TSender, TValue, TTarget>(
-            this IObservedChange<TSender, TValue> This,
-            TTarget target,
-            Expression<Func<TTarget, TValue>> property)
+            this IObservedChange<TSender, TValue> This, TTarget target, Expression<Func<TTarget, TValue>> property)
         {
-            Reflection.TrySetValueToPropertyChain(target, Reflection.Rewrite(property.Body).GetExpressionChain(),
-                This.GetValue());
+            Reflection.TrySetValueToPropertyChain(
+                target, Reflection.Rewrite(property.Body).GetExpressionChain(), This.GetValue());
         }
 
         /// <summary>

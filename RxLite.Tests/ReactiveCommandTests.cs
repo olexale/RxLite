@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -13,7 +12,8 @@ namespace RxLite.Tests
     [TestFixture]
     public class ReactiveCommandTests
     {
-        private static ReactiveCommand<object> CreateCommand(IObservable<bool> canExecute = null, IScheduler scheduler = null)
+        private static ReactiveCommand<object> CreateCommand(
+            IObservable<bool> canExecute = null, IScheduler scheduler = null)
         {
             return ReactiveCommand.Create(canExecute, scheduler);
         }
@@ -34,21 +34,6 @@ namespace RxLite.Tests
             }
 
             Assert.True(failed);
-        }
-
-        private static async Task AssertExceptionForwardedToThrownExceptions(IReactiveCommand<Unit> command,
-            Exception exception)
-        {
-            var exceptions = command.ThrownExceptions.CreateCollection();
-
-            await command.ExecuteAsync()
-                .Catch(Observable.Empty<Unit>())
-                .DefaultIfEmpty(Unit.Default);
-
-            //TODO ugly! find a way on how to port TestScheduler
-            await Task.Delay(TimeSpan.FromMilliseconds(500));
-            Assert.AreEqual(1, exceptions.Count);
-            Assert.IsTrue(exceptions.Contains(exception));
         }
 
         private static IObservable<Unit> ThrowAsync(Exception ex)
@@ -91,26 +76,6 @@ namespace RxLite.Tests
         }
 
         [Test]
-        public async Task ExecuteAsyncForwardsAsyncExceptionsToThrownExceptions()
-        {
-            var exception = new Exception("Aieeeee!");
-
-            var command = ReactiveCommand.CreateAsyncObservable(_ => ThrowAsync(exception));
-
-            await AssertExceptionForwardedToThrownExceptions(command, exception);
-        }
-
-        [Test]
-        public async Task ExecuteAsyncForwardsExceptionsToThrownExceptions()
-        {
-            var exception = new Exception("Aieeeee!");
-
-            var command = ReactiveCommand.CreateAsyncObservable(_ => ThrowSync(exception));
-
-            await AssertExceptionForwardedToThrownExceptions(command, exception);
-        }
-
-        [Test]
         public async Task ExecuteAsyncThrowsExceptionOnAsyncError()
         {
             var exception = new Exception("Aieeeee!");
@@ -133,8 +98,7 @@ namespace RxLite.Tests
         [Test]
         public void ExecuteDoesNotThrowOnAsyncError()
         {
-            var command = ReactiveCommand.CreateAsyncObservable(_ =>
-                ThrowAsync(new Exception("Aieeeee!")));
+            var command = ReactiveCommand.CreateAsyncObservable(_ => ThrowAsync(new Exception("Aieeeee!")));
 
             command.ThrownExceptions.Subscribe();
 
@@ -144,8 +108,7 @@ namespace RxLite.Tests
         [Test]
         public void ExecuteDoesNotThrowOnError()
         {
-            var command = ReactiveCommand.CreateAsyncObservable(_ =>
-                ThrowSync(new Exception("Aieeeee!")));
+            var command = ReactiveCommand.CreateAsyncObservable(_ => ThrowSync(new Exception("Aieeeee!")));
 
             command.ThrownExceptions.Subscribe();
 
@@ -155,21 +118,21 @@ namespace RxLite.Tests
         [Test]
         public async void MultipleSubscribesShouldntResultInMultipleNotifications()
         {
-            var input = new[] {1, 2, 1, 2};
+            var input = new[] { 1, 2, 1, 2 };
             var fixture = CreateCommand();
 
             var oddList = new List<int>();
             var evenList = new List<int>();
-            fixture.Where(x => ((int) x)%2 != 0).Subscribe(x => oddList.Add((int) x));
-            fixture.Where(x => ((int) x)%2 == 0).Subscribe(x => evenList.Add((int) x));
+            fixture.Where(x => ((int)x) % 2 != 0).Subscribe(x => oddList.Add((int)x));
+            fixture.Where(x => ((int)x) % 2 == 0).Subscribe(x => evenList.Add((int)x));
 
             foreach (var i in input)
             {
                 await fixture.ExecuteAsyncTask(i);
             }
 
-            Assert.AreEqual(new[] {1, 1}, oddList);
-            Assert.AreEqual(new[] {2, 2}, evenList);
+            Assert.AreEqual(new[] { 1, 1 }, oddList);
+            Assert.AreEqual(new[] { 2, 2 }, evenList);
         }
 
         [Test]

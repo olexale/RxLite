@@ -13,12 +13,12 @@ namespace RxLite
     {
         public int GetAffinityForObject(Type type, string propertyName, bool beforeChanged)
         {
-            var target = beforeChanged ? typeof (INotifyPropertyChanging) : typeof (INotifyPropertyChanged);
+            var target = beforeChanged ? typeof(INotifyPropertyChanging) : typeof(INotifyPropertyChanged);
             return target.GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()) ? 5 : 0;
         }
 
-        public IObservable<IObservedChange<object, object>> GetNotificationForProperty(object sender,
-            Expression expression, bool beforeChanged)
+        public IObservable<IObservedChange<object, object>> GetNotificationForProperty(
+            object sender, Expression expression, bool beforeChanged)
         {
             var before = sender as INotifyPropertyChanging;
             var after = sender as INotifyPropertyChanged;
@@ -31,33 +31,47 @@ namespace RxLite
             var memberInfo = expression.GetMemberInfo();
             if (beforeChanged)
             {
-                var obs = Observable.FromEventPattern<PropertyChangingEventHandler, PropertyChangingEventArgs>(
-                    x => before.PropertyChanging += x, x => before.PropertyChanging -= x);
+                var obs =
+                    Observable.FromEventPattern<PropertyChangingEventHandler, PropertyChangingEventArgs>(
+                        x => before.PropertyChanging += x, x => before.PropertyChanging -= x);
 
                 if (expression.NodeType == ExpressionType.Index)
                 {
-                    return obs.Where(x => string.IsNullOrEmpty(x.EventArgs.PropertyName)
-                                          || x.EventArgs.PropertyName.Equals(memberInfo.Name + "[]"))
-                        .Select(x => new ObservedChange<object, object>(sender, expression));
+                    return
+                        obs.Where(
+                            x =>
+                            string.IsNullOrEmpty(x.EventArgs.PropertyName)
+                            || x.EventArgs.PropertyName.Equals(memberInfo.Name + "[]"))
+                           .Select(x => new ObservedChange<object, object>(sender, expression));
                 }
-                return obs.Where(x => string.IsNullOrEmpty(x.EventArgs.PropertyName)
-                                      || x.EventArgs.PropertyName.Equals(memberInfo.Name))
-                    .Select(x => new ObservedChange<object, object>(sender, expression));
+                return
+                    obs.Where(
+                        x =>
+                        string.IsNullOrEmpty(x.EventArgs.PropertyName)
+                        || x.EventArgs.PropertyName.Equals(memberInfo.Name))
+                       .Select(x => new ObservedChange<object, object>(sender, expression));
             }
             else
             {
-                var obs = Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
-                    x => after.PropertyChanged += x, x => after.PropertyChanged -= x);
+                var obs =
+                    Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+                        x => after.PropertyChanged += x, x => after.PropertyChanged -= x);
 
                 if (expression.NodeType == ExpressionType.Index)
                 {
-                    return obs.Where(x => string.IsNullOrEmpty(x.EventArgs.PropertyName)
-                                          || x.EventArgs.PropertyName.Equals(memberInfo.Name + "[]"))
-                        .Select(x => new ObservedChange<object, object>(sender, expression));
+                    return
+                        obs.Where(
+                            x =>
+                            string.IsNullOrEmpty(x.EventArgs.PropertyName)
+                            || x.EventArgs.PropertyName.Equals(memberInfo.Name + "[]"))
+                           .Select(x => new ObservedChange<object, object>(sender, expression));
                 }
-                return obs.Where(x => string.IsNullOrEmpty(x.EventArgs.PropertyName)
-                                      || x.EventArgs.PropertyName.Equals(memberInfo.Name))
-                    .Select(x => new ObservedChange<object, object>(sender, expression));
+                return
+                    obs.Where(
+                        x =>
+                        string.IsNullOrEmpty(x.EventArgs.PropertyName)
+                        || x.EventArgs.PropertyName.Equals(memberInfo.Name))
+                       .Select(x => new ObservedChange<object, object>(sender, expression));
             }
         }
     }

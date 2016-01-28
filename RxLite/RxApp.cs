@@ -10,24 +10,26 @@ namespace RxLite
     {
         static RxApp()
         {
-            DefaultExceptionHandler = Observer.Create<Exception>(ex =>
-            {
-                // NB: If you're seeing this, it means that an
-                // ObservableAsPropertyHelper or the CanExecute of a
-                // ReactiveCommand ended in an OnError. Instead of silently
-                // breaking, ReactiveUI will halt here if a debugger is attached.
-                if (Debugger.IsAttached)
-                {
-                    Debugger.Break();
-                }
+            DefaultExceptionHandler = Observer.Create<Exception>(
+                ex =>
+                    {
+                        // NB: If you're seeing this, it means that an
+                        // ObservableAsPropertyHelper or the CanExecute of a
+                        // ReactiveCommand ended in an OnError. Instead of silently
+                        // breaking, ReactiveUI will halt here if a debugger is attached.
+                        if (Debugger.IsAttached)
+                        {
+                            Debugger.Break();
+                        }
 
-                MainThreadScheduler.Schedule(() =>
-                {
-                    throw new Exception(
-                        "An OnError occurred on an object (usually ObservableAsPropertyHelper) that would break a binding or command. To prevent this, Subscribe to the ThrownExceptions property of your objects",
-                        ex);
-                });
-            });
+                        MainThreadScheduler.Schedule(
+                            () =>
+                                {
+                                    throw new Exception(
+                                        "An OnError occurred on an object (usually ObservableAsPropertyHelper) that would break a binding or command. To prevent this, Subscribe to the ThrownExceptions property of your objects",
+                                        ex);
+                                });
+                    });
 
             if (MainThreadScheduler == null)
             {
@@ -50,12 +52,6 @@ namespace RxLite
         ///     to simplify writing common unit tests.
         /// </summary>
         public static IScheduler MainThreadScheduler { get; set; }
-
-        public static bool SupportsRangeNotifications { get; } = false;
-
-        public static void LogWarn(string format, params object[] args)
-        {
-        }
 
         [MethodImpl(MethodImplOptions.NoOptimization)]
         internal static void EnsureInitialized()

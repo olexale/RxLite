@@ -11,30 +11,40 @@ namespace RxLite
     /// </summary>
     [DataContract]
     public class ReactiveObject : IReactiveNotifyPropertyChanged<IReactiveObject>, IHandleObservableErrors,
-        IReactiveObject
+                                  IReactiveObject
     {
-#if NET_45
-        public event PropertyChangingEventHandler PropertyChanging;
-
-        void IReactiveObject.RaisePropertyChanging(PropertyChangingEventArgs args)
+        protected ReactiveObject()
         {
-        var handler = this.PropertyChanging;
-        if(handler != null) {
-        handler(this, args);
-        }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// </summary>
+        [IgnoreDataMember]
+        public IObservable<Exception> ThrownExceptions => this.GetThrownExceptionsObservable();
 
-        void IReactiveObject.RaisePropertyChanged(PropertyChangedEventArgs args)
+        /// <summary>
+        ///     Represents an Observable that fires *before* a property is about to
+        ///     be changed.
+        /// </summary>
+        [IgnoreDataMember]
+        public IObservable<IReactivePropertyChangedEventArgs<IReactiveObject>> Changing
+            => ((IReactiveObject)this).GetChangingObservable();
+
+        /// <summary>
+        ///     Represents an Observable that fires *after* a property has changed.
+        /// </summary>
+        [IgnoreDataMember]
+        public IObservable<IReactivePropertyChangedEventArgs<IReactiveObject>> Changed
+            => ((IReactiveObject)this).GetChangedObservable();
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        public IDisposable SuppressChangeNotifications()
         {
-        var handler = this.PropertyChanged;
-        if (handler != null) {
-        handler(this, args);
-        }
+            return IReactiveObjectExtensions.SuppressChangeNotifications(this);
         }
 
-#else
         public event PropertyChangingEventHandler PropertyChanging
         {
             add { PropertyChangingEventManager.AddHandler(this, value); }
@@ -55,39 +65,6 @@ namespace RxLite
         void IReactiveObject.RaisePropertyChanged(PropertyChangedEventArgs args)
         {
             PropertyChangedEventManager.DeliverEvent(this, args);
-        }
-#endif
-
-        /// <summary>
-        ///     Represents an Observable that fires *before* a property is about to
-        ///     be changed.
-        /// </summary>
-        [IgnoreDataMember]
-        public IObservable<IReactivePropertyChangedEventArgs<IReactiveObject>> Changing
-            => ((IReactiveObject) this).GetChangingObservable();
-
-        /// <summary>
-        ///     Represents an Observable that fires *after* a property has changed.
-        /// </summary>
-        [IgnoreDataMember]
-        public IObservable<IReactivePropertyChangedEventArgs<IReactiveObject>> Changed
-            => ((IReactiveObject) this).GetChangedObservable();
-
-        /// <summary>
-        /// </summary>
-        [IgnoreDataMember]
-        public IObservable<Exception> ThrownExceptions => this.GetThrownExceptionsObservable();
-
-        protected ReactiveObject()
-        {
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        public IDisposable SuppressChangeNotifications()
-        {
-            return IReactiveObjectExtensions.SuppressChangeNotifications(this);
         }
 
         /// <summary>

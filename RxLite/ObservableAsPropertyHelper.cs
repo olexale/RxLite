@@ -37,10 +37,7 @@ namespace RxLite
         ///     (and is by default)
         /// </param>
         public ObservableAsPropertyHelper(
-            IObservable<T> observable,
-            Action<T> onChanged,
-            T initialValue = default(T),
-            IScheduler scheduler = null)
+            IObservable<T> observable, Action<T> onChanged, T initialValue = default(T), IScheduler scheduler = null)
             : this(observable, onChanged, null, initialValue, scheduler)
         {
         }
@@ -66,10 +63,7 @@ namespace RxLite
         ///     (and is by default)
         /// </param>
         public ObservableAsPropertyHelper(
-            IObservable<T> observable,
-            Action<T> onChanged,
-            Action<T> onChanging = null,
-            T initialValue = default(T),
+            IObservable<T> observable, Action<T> onChanged, Action<T> onChanging = null, T initialValue = default(T),
             IScheduler scheduler = null)
         {
             Contract.Requires(observable != null);
@@ -77,32 +71,35 @@ namespace RxLite
 
             scheduler = scheduler ?? CurrentThreadScheduler.Instance;
             onChanging = onChanging ?? (_ => { });
-            _lastValue = initialValue;
+            this._lastValue = initialValue;
 
             var subj = new ScheduledSubject<T>(scheduler);
-            var exSubject = new ScheduledSubject<Exception>(CurrentThreadScheduler.Instance,
-                RxApp.DefaultExceptionHandler);
+            var exSubject = new ScheduledSubject<Exception>(
+                CurrentThreadScheduler.Instance, RxApp.DefaultExceptionHandler);
 
             var firedInitial = false;
-            subj.Subscribe(x =>
-            {
-                // Suppress a non-change between initialValue and the first value
-                // from a Subscribe
-                if (firedInitial && EqualityComparer<T>.Default.Equals(x, _lastValue))
-                    return;
+            subj.Subscribe(
+                x =>
+                    {
+                        // Suppress a non-change between initialValue and the first value
+                        // from a Subscribe
+                        if (firedInitial && EqualityComparer<T>.Default.Equals(x, this._lastValue))
+                        {
+                            return;
+                        }
 
-                onChanging(x);
-                _lastValue = x;
-                onChanged(x);
-                firedInitial = true;
-            }, exSubject.OnNext);
+                        onChanging(x);
+                        this._lastValue = x;
+                        onChanged(x);
+                        firedInitial = true;
+                    }, exSubject.OnNext);
 
-            ThrownExceptions = exSubject;
+            this.ThrownExceptions = exSubject;
 
             // Fire off an initial RaisePropertyChanged to make sure bindings
             // have a value
             subj.OnNext(initialValue);
-            _source = observable.DistinctUntilChanged().Multicast(subj);
+            this._source = observable.DistinctUntilChanged().Multicast(subj);
         }
 
         /// <summary>
@@ -112,15 +109,15 @@ namespace RxLite
         {
             get
             {
-                _inner = _inner ?? _source.Connect();
-                return _lastValue;
+                this._inner = this._inner ?? this._source.Connect();
+                return this._lastValue;
             }
         }
 
         public void Dispose()
         {
-            (_inner ?? Disposable.Empty).Dispose();
-            _inner = null;
+            (this._inner ?? Disposable.Empty).Dispose();
+            this._inner = null;
         }
 
         /// <summary>

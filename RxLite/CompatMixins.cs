@@ -6,14 +6,6 @@ namespace RxLite
 {
     public static class CompatMixins
     {
-        internal static void ForEach<T>(this IEnumerable<T> This, Action<T> block)
-        {
-            foreach (var v in This)
-            {
-                block(v);
-            }
-        }
-
         internal static IEnumerable<T> SkipLast<T>(this IEnumerable<T> This, int count)
         {
             return This.Take(This.Count() - count);

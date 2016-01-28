@@ -86,11 +86,15 @@ namespace RxLite
         public static void AddHandler(TEventSource source, TEventHandler handler)
         {
             if (source == null)
+            {
                 throw new ArgumentNullException("source");
+            }
             if (handler == null)
+            {
                 throw new ArgumentNullException("handler");
+            }
 
-            if (!typeof (TEventHandler).GetTypeInfo().IsSubclassOf(typeof (Delegate)))
+            if (!typeof(TEventHandler).GetTypeInfo().IsSubclassOf(typeof(Delegate)))
             {
                 throw new ArgumentException("Handler must be Delegate type");
             }
@@ -106,11 +110,15 @@ namespace RxLite
         public static void RemoveHandler(TEventSource source, TEventHandler handler)
         {
             if (source == null)
+            {
                 throw new ArgumentNullException("source");
+            }
             if (handler == null)
+            {
                 throw new ArgumentNullException("handler");
+            }
 
-            if (!typeof (TEventHandler).GetTypeInfo().IsSubclassOf(typeof (Delegate)))
+            if (!typeof(TEventHandler).GetTypeInfo().IsSubclassOf(typeof(Delegate)))
             {
                 throw new ArgumentException("handler must be Delegate type");
             }
@@ -146,21 +154,21 @@ namespace RxLite
 
         private void PrivateAddHandler(TEventSource source, TEventHandler handler)
         {
-            AddWeakHandler(source, handler);
-            AddTargetHandler(handler);
+            this.AddWeakHandler(source, handler);
+            this.AddTargetHandler(handler);
         }
 
         private void AddWeakHandler(TEventSource source, TEventHandler handler)
         {
             WeakHandlerList weakHandlers;
-            if (_sourceToWeakHandlers.TryGetValue(source, out weakHandlers))
+            if (this._sourceToWeakHandlers.TryGetValue(source, out weakHandlers))
             {
                 // clone list if we are currently delivering an event
                 if (weakHandlers.IsDeliverActive)
                 {
                     weakHandlers = weakHandlers.Clone();
-                    _sourceToWeakHandlers.Remove(source);
-                    _sourceToWeakHandlers.Add(source, weakHandlers);
+                    this._sourceToWeakHandlers.Remove(source);
+                    this._sourceToWeakHandlers.Add(source, weakHandlers);
                 }
                 weakHandlers.AddWeakHandler(source, handler);
             }
@@ -169,11 +177,11 @@ namespace RxLite
                 weakHandlers = new WeakHandlerList();
                 weakHandlers.AddWeakHandler(source, handler);
 
-                _sourceToWeakHandlers.Add(source, weakHandlers);
-                StartListening(source);
+                this._sourceToWeakHandlers.Add(source, weakHandlers);
+                this.StartListening(source);
             }
 
-            Purge(source);
+            this.Purge(source);
         }
 
         private void AddTargetHandler(TEventHandler handler)
@@ -182,42 +190,42 @@ namespace RxLite
             var key = @delegate.Target ?? StaticSource;
             List<Delegate> delegates;
 
-            if (_targetToEventHandler.TryGetValue(key, out delegates))
+            if (this._targetToEventHandler.TryGetValue(key, out delegates))
             {
                 delegates.Add(@delegate);
             }
             else
             {
-                delegates = new List<Delegate> {@delegate};
+                delegates = new List<Delegate> { @delegate };
 
-                _targetToEventHandler.Add(key, delegates);
+                this._targetToEventHandler.Add(key, delegates);
             }
         }
 
         private void PrivateRemoveHandler(TEventSource source, TEventHandler handler)
         {
-            RemoveWeakHandler(source, handler);
-            RemoveTargetHandler(handler);
+            this.RemoveWeakHandler(source, handler);
+            this.RemoveTargetHandler(handler);
         }
 
         private void RemoveWeakHandler(TEventSource source, TEventHandler handler)
         {
             WeakHandlerList weakHandlers;
 
-            if (_sourceToWeakHandlers.TryGetValue(source, out weakHandlers))
+            if (this._sourceToWeakHandlers.TryGetValue(source, out weakHandlers))
             {
                 // clone list if we are currently delivering an event
                 if (weakHandlers.IsDeliverActive)
                 {
                     weakHandlers = weakHandlers.Clone();
-                    _sourceToWeakHandlers.Remove(source);
-                    _sourceToWeakHandlers.Add(source, weakHandlers);
+                    this._sourceToWeakHandlers.Remove(source);
+                    this._sourceToWeakHandlers.Add(source, weakHandlers);
                 }
 
                 if (weakHandlers.RemoveWeakHandler(source, handler) && weakHandlers.Count == 0)
                 {
-                    _sourceToWeakHandlers.Remove(source);
-                    StopListening(source);
+                    this._sourceToWeakHandlers.Remove(source);
+                    this.StopListening(source);
                 }
             }
         }
@@ -228,13 +236,13 @@ namespace RxLite
             var key = @delegate.Target ?? StaticSource;
 
             var delegates = default(List<Delegate>);
-            if (_targetToEventHandler.TryGetValue(key, out delegates))
+            if (this._targetToEventHandler.TryGetValue(key, out delegates))
             {
                 delegates.Remove(@delegate);
 
                 if (delegates.Count == 0)
                 {
-                    _targetToEventHandler.Remove(key);
+                    this._targetToEventHandler.Remove(key);
                 }
             }
         }
@@ -246,7 +254,7 @@ namespace RxLite
 
             var hasStaleEntries = false;
 
-            if (_sourceToWeakHandlers.TryGetValue(source, out weakHandlers))
+            if (this._sourceToWeakHandlers.TryGetValue(source, out weakHandlers))
             {
                 using (weakHandlers.DeliverActive())
                 {
@@ -256,7 +264,7 @@ namespace RxLite
 
             if (hasStaleEntries)
             {
-                Purge(source);
+                this.Purge(source);
             }
         }
 
@@ -264,13 +272,13 @@ namespace RxLite
         {
             var weakHandlers = default(WeakHandlerList);
 
-            if (_sourceToWeakHandlers.TryGetValue(source, out weakHandlers))
+            if (this._sourceToWeakHandlers.TryGetValue(source, out weakHandlers))
             {
                 if (weakHandlers.IsDeliverActive)
                 {
                     weakHandlers = weakHandlers.Clone();
-                    _sourceToWeakHandlers.Remove(source);
-                    _sourceToWeakHandlers.Add(source, weakHandlers);
+                    this._sourceToWeakHandlers.Remove(source);
+                    this._sourceToWeakHandlers.Add(source, weakHandlers);
                 }
                 else
                 {
@@ -290,60 +298,63 @@ namespace RxLite
                 this._originalHandler = new WeakReference(originalHandler);
             }
 
-            public bool IsActive => _source != null && _source.IsAlive && _originalHandler != null && _originalHandler.IsAlive;
+            public bool IsActive
+                =>
+                    this._source != null && this._source.IsAlive && this._originalHandler != null
+                    && this._originalHandler.IsAlive;
 
             public TEventHandler Handler
             {
                 get
                 {
-                    if (_originalHandler == null)
+                    if (this._originalHandler == null)
                     {
                         return default(TEventHandler);
                     }
-                    return (TEventHandler) _originalHandler.Target;
+                    return (TEventHandler)this._originalHandler.Target;
                 }
             }
 
             public bool Matches(object source, TEventHandler handler)
             {
-                return this._source != null &&
-                       ReferenceEquals(this._source.Target, source) &&
-                       _originalHandler != null &&
-                       (ReferenceEquals(_originalHandler.Target, handler) ||
-                        (_originalHandler.Target is PropertyChangedEventHandler &&
-                         handler is PropertyChangedEventHandler &&
-                         Equals((_originalHandler.Target as PropertyChangedEventHandler).Target,
-                             (handler as PropertyChangedEventHandler).Target)));
+                return this._source != null && ReferenceEquals(this._source.Target, source)
+                       && this._originalHandler != null
+                       && (ReferenceEquals(this._originalHandler.Target, handler)
+                           || (this._originalHandler.Target is PropertyChangedEventHandler
+                               && handler is PropertyChangedEventHandler
+                               && Equals(
+                                   (this._originalHandler.Target as PropertyChangedEventHandler).Target,
+                                   (handler as PropertyChangedEventHandler).Target)));
             }
         }
 
         internal class WeakHandlerList
         {
-            private int _deliveries;
             private readonly List<WeakHandler> _handlers;
+            private int _deliveries;
 
             public WeakHandlerList()
             {
-                _handlers = new List<WeakHandler>();
+                this._handlers = new List<WeakHandler>();
             }
 
-            public int Count => _handlers.Count;
+            public int Count => this._handlers.Count;
 
-            public bool IsDeliverActive => _deliveries > 0;
+            public bool IsDeliverActive => this._deliveries > 0;
 
             public void AddWeakHandler(TEventSource source, TEventHandler handler)
             {
                 var handlerSink = new WeakHandler(source, handler);
-                _handlers.Add(handlerSink);
+                this._handlers.Add(handlerSink);
             }
 
             public bool RemoveWeakHandler(TEventSource source, TEventHandler handler)
             {
-                foreach (var weakHandler in _handlers)
+                foreach (var weakHandler in this._handlers)
                 {
                     if (weakHandler.Matches(source, handler))
                     {
-                        return _handlers.Remove(weakHandler);
+                        return this._handlers.Remove(weakHandler);
                     }
                 }
 
@@ -353,23 +364,23 @@ namespace RxLite
             public WeakHandlerList Clone()
             {
                 var newList = new WeakHandlerList();
-                newList._handlers.AddRange(_handlers.Where(h => h.IsActive));
+                newList._handlers.AddRange(this._handlers.Where(h => h.IsActive));
 
                 return newList;
             }
 
             public IDisposable DeliverActive()
             {
-                Interlocked.Increment(ref _deliveries);
+                Interlocked.Increment(ref this._deliveries);
 
-                return Disposable.Create(() => Interlocked.Decrement(ref _deliveries));
+                return Disposable.Create(() => Interlocked.Decrement(ref this._deliveries));
             }
 
             public virtual bool DeliverEvent(object sender, TEventArgs args)
             {
                 var hasStaleEntries = false;
 
-                foreach (var handler in _handlers)
+                foreach (var handler in this._handlers)
                 {
                     if (handler.IsActive)
                     {
@@ -387,11 +398,11 @@ namespace RxLite
 
             public void Purge()
             {
-                for (var i = _handlers.Count - 1; i >= 0; i--)
+                for (var i = this._handlers.Count - 1; i >= 0; i--)
                 {
-                    if (!_handlers[i].IsActive)
+                    if (!this._handlers[i].IsActive)
                     {
-                        _handlers.RemoveAt(i);
+                        this._handlers.RemoveAt(i);
                     }
                 }
             }

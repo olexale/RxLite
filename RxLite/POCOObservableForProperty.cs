@@ -19,8 +19,8 @@ namespace RxLite
             return 1;
         }
 
-        public IObservable<IObservedChange<object, object>> GetNotificationForProperty(object sender,
-            Expression expression, bool beforeChanged = false)
+        public IObservable<IObservedChange<object, object>> GetNotificationForProperty(
+            object sender, Expression expression, bool beforeChanged = false)
         {
             var type = sender.GetType();
             if (!HasWarned.ContainsKey(type))
@@ -28,8 +28,9 @@ namespace RxLite
                 HasWarned[type] = true;
             }
 
-            return Observable.Return(new ObservedChange<object, object>(sender, expression), RxApp.MainThreadScheduler)
-                .Concat(Observable.Never<IObservedChange<object, object>>());
+            return
+                Observable.Return(new ObservedChange<object, object>(sender, expression), RxApp.MainThreadScheduler)
+                          .Concat(Observable.Never<IObservedChange<object, object>>());
         }
     }
 }

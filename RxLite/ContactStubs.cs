@@ -7,16 +7,13 @@ namespace RxLite
     {
         public PropertyChangingEventArgs(string propertyName)
         {
-            PropertyName = propertyName;
+            this.PropertyName = propertyName;
         }
 
         public string PropertyName { get; }
     }
 
-    public delegate void PropertyChangingEventHandler(
-        object sender,
-        PropertyChangingEventArgs e
-        );
+    public delegate void PropertyChangingEventHandler(object sender, PropertyChangingEventArgs e);
 
     public interface INotifyPropertyChanging
     {

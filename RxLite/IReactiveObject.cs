@@ -15,6 +15,7 @@ namespace RxLite
     public interface IReactiveObject : INotifyPropertyChanged, INotifyPropertyChanging
     {
         new event PropertyChangingEventHandler PropertyChanging;
+
         new event PropertyChangedEventHandler PropertyChanged;
 
         void RaisePropertyChanging(PropertyChangingEventArgs args);
@@ -31,21 +32,21 @@ namespace RxLite
         public static IObservable<IReactivePropertyChangedEventArgs<TSender>> GetChangedObservable<TSender>(
             this TSender This) where TSender : IReactiveObject
         {
-            var val = State.GetValue(This, key => (IExtensionState<IReactiveObject>) new ExtensionState<TSender>(This));
+            var val = State.GetValue(This, key => (IExtensionState<IReactiveObject>)new ExtensionState<TSender>(This));
             return val.Changed.Cast<IReactivePropertyChangedEventArgs<TSender>>();
         }
 
         public static IObservable<IReactivePropertyChangedEventArgs<TSender>> GetChangingObservable<TSender>(
             this TSender This) where TSender : IReactiveObject
         {
-            var val = State.GetValue(This, key => (IExtensionState<IReactiveObject>) new ExtensionState<TSender>(This));
+            var val = State.GetValue(This, key => (IExtensionState<IReactiveObject>)new ExtensionState<TSender>(This));
             return val.Changing.Cast<IReactivePropertyChangedEventArgs<TSender>>();
         }
 
         public static IObservable<Exception> GetThrownExceptionsObservable<TSender>(this TSender This)
             where TSender : IReactiveObject
         {
-            var s = State.GetValue(This, key => (IExtensionState<IReactiveObject>) new ExtensionState<TSender>(This));
+            var s = State.GetValue(This, key => (IExtensionState<IReactiveObject>)new ExtensionState<TSender>(This));
             return s.ThrownExceptions;
         }
 
@@ -54,7 +55,7 @@ namespace RxLite
         {
             Contract.Requires(propertyName != null);
 
-            var s = State.GetValue(This, key => (IExtensionState<IReactiveObject>) new ExtensionState<TSender>(This));
+            var s = State.GetValue(This, key => (IExtensionState<IReactiveObject>)new ExtensionState<TSender>(This));
 
             s.RaisePropertyChanging(propertyName);
         }
@@ -64,7 +65,7 @@ namespace RxLite
         {
             Contract.Requires(propertyName != null);
 
-            var s = State.GetValue(This, key => (IExtensionState<IReactiveObject>) new ExtensionState<TSender>(This));
+            var s = State.GetValue(This, key => (IExtensionState<IReactiveObject>)new ExtensionState<TSender>(This));
 
             s.RaisePropertyChanged(propertyName);
         }
@@ -72,21 +73,21 @@ namespace RxLite
         public static IDisposable SuppressChangeNotifications<TSender>(this TSender This)
             where TSender : IReactiveObject
         {
-            var s = State.GetValue(This, key => (IExtensionState<IReactiveObject>) new ExtensionState<TSender>(This));
+            var s = State.GetValue(This, key => (IExtensionState<IReactiveObject>)new ExtensionState<TSender>(This));
 
             return s.SuppressChangeNotifications();
         }
 
         public static bool AreChangeNotificationsEnabled<TSender>(this TSender This) where TSender : IReactiveObject
         {
-            var s = State.GetValue(This, key => (IExtensionState<IReactiveObject>) new ExtensionState<TSender>(This));
+            var s = State.GetValue(This, key => (IExtensionState<IReactiveObject>)new ExtensionState<TSender>(This));
 
             return s.AreChangeNotificationsEnabled();
         }
 
         public static IDisposable DelayChangeNotifications<TSender>(this TSender This) where TSender : IReactiveObject
         {
-            var s = State.GetValue(This, key => (IExtensionState<IReactiveObject>) new ExtensionState<TSender>(This));
+            var s = State.GetValue(This, key => (IExtensionState<IReactiveObject>)new ExtensionState<TSender>(This));
 
             return s.DelayChangeNotifications();
         }
@@ -110,10 +111,8 @@ namespace RxLite
         /// </param>
         /// <returns>The newly set value, normally discarded.</returns>
         public static TRet RaiseAndSetIfChanged<TObj, TRet>(
-            this TObj This,
-            ref TRet backingField,
-            TRet newValue,
-            [CallerMemberName] string propertyName = null) where TObj : IReactiveObject
+            this TObj This, ref TRet backingField, TRet newValue, [CallerMemberName] string propertyName = null)
+            where TObj : IReactiveObject
         {
             Contract.Requires(propertyName != null);
 
@@ -137,9 +136,8 @@ namespace RxLite
         ///     A string representing the name of the property that has been changed.
         ///     Leave <c>null</c> to let the runtime set to caller member name.
         /// </param>
-        public static void RaisePropertyChanged<TSender>(this TSender This,
-            [CallerMemberName] string propertyName = null)
-            where TSender : IReactiveObject
+        public static void RaisePropertyChanged<TSender>(
+            this TSender This, [CallerMemberName] string propertyName = null) where TSender : IReactiveObject
         {
             This.raisePropertyChanged(propertyName);
         }
@@ -153,9 +151,8 @@ namespace RxLite
         ///     A string representing the name of the property that has been changed.
         ///     Leave <c>null</c> to let the runtime set to caller member name.
         /// </param>
-        public static void RaisePropertyChanging<TSender>(this TSender This,
-            [CallerMemberName] string propertyName = null)
-            where TSender : IReactiveObject
+        public static void RaisePropertyChanging<TSender>(
+            this TSender This, [CallerMemberName] string propertyName = null) where TSender : IReactiveObject
         {
             This.raisePropertyChanging(propertyName);
         }
@@ -183,7 +180,8 @@ namespace RxLite
             return unique;
         }
 
-        private class ExtensionState<TSender> : IExtensionState<TSender> where TSender : IReactiveObject
+        private class ExtensionState<TSender> : IExtensionState<TSender>
+            where TSender : IReactiveObject
         {
             private readonly ISubject<IReactivePropertyChangedEventArgs<TSender>> _changedSubject;
             private readonly ISubject<IReactivePropertyChangedEventArgs<TSender>> _changingSubject;
@@ -199,45 +197,42 @@ namespace RxLite
             /// </summary>
             public ExtensionState(TSender sender)
             {
-                _sender = sender;
-                _changingSubject = new Subject<IReactivePropertyChangedEventArgs<TSender>>();
-                _changedSubject = new Subject<IReactivePropertyChangedEventArgs<TSender>>();
-                _startDelayNotifications = new Subject<Unit>();
-                _thrownExceptions = new ScheduledSubject<Exception>(Scheduler.Immediate, RxApp.DefaultExceptionHandler);
+                this._sender = sender;
+                this._changingSubject = new Subject<IReactivePropertyChangedEventArgs<TSender>>();
+                this._changedSubject = new Subject<IReactivePropertyChangedEventArgs<TSender>>();
+                this._startDelayNotifications = new Subject<Unit>();
+                this._thrownExceptions = new ScheduledSubject<Exception>(
+                    Scheduler.Immediate, RxApp.DefaultExceptionHandler);
 
-                Changed = Observable.Publish(_changedSubject
-                    .Buffer(
-                        _changedSubject.Where(_ => !AreChangeNotificationsDelayed())
-                            .Select(_ => Unit.Default)
-                            .Merge(_startDelayNotifications)
-                    )
-                    .SelectMany(dedup))
-                    .RefCount();
+                this.Changed =
+                    Observable.Publish(
+                        this._changedSubject.Buffer(
+                            this._changedSubject.Where(_ => !this.AreChangeNotificationsDelayed())
+                                .Select(_ => Unit.Default)
+                                .Merge(this._startDelayNotifications)).SelectMany(dedup)).RefCount();
 
-                Changing = Observable.Publish(_changingSubject
-                    .Buffer(
-                        _changingSubject.Where(_ => !AreChangeNotificationsDelayed())
-                            .Select(_ => Unit.Default)
-                            .Merge(_startDelayNotifications)
-                    )
-                    .SelectMany(dedup))
-                    .RefCount();
+                this.Changing =
+                    Observable.Publish(
+                        this._changingSubject.Buffer(
+                            this._changingSubject.Where(_ => !this.AreChangeNotificationsDelayed())
+                                .Select(_ => Unit.Default)
+                                .Merge(this._startDelayNotifications)).SelectMany(dedup)).RefCount();
             }
 
             public IObservable<IReactivePropertyChangedEventArgs<TSender>> Changing { get; }
 
             public IObservable<IReactivePropertyChangedEventArgs<TSender>> Changed { get; }
 
-            public IObservable<Exception> ThrownExceptions => _thrownExceptions;
+            public IObservable<Exception> ThrownExceptions => this._thrownExceptions;
 
             public bool AreChangeNotificationsEnabled()
             {
-                return (Interlocked.Read(ref _changeNotificationsSuppressed) == 0);
+                return (Interlocked.Read(ref this._changeNotificationsSuppressed) == 0);
             }
 
             public bool AreChangeNotificationsDelayed()
             {
-                return (Interlocked.Read(ref _changeNotificationsDelayed) > 0);
+                return (Interlocked.Read(ref this._changeNotificationsDelayed) > 0);
             }
 
             /// <summary>
@@ -251,46 +246,51 @@ namespace RxLite
             /// </returns>
             public IDisposable SuppressChangeNotifications()
             {
-                Interlocked.Increment(ref _changeNotificationsSuppressed);
-                return Disposable.Create(() => Interlocked.Decrement(ref _changeNotificationsSuppressed));
+                Interlocked.Increment(ref this._changeNotificationsSuppressed);
+                return Disposable.Create(() => Interlocked.Decrement(ref this._changeNotificationsSuppressed));
             }
 
             public IDisposable DelayChangeNotifications()
             {
-                if (Interlocked.Increment(ref _changeNotificationsDelayed) == 1)
+                if (Interlocked.Increment(ref this._changeNotificationsDelayed) == 1)
                 {
-                    _startDelayNotifications.OnNext(Unit.Default);
+                    this._startDelayNotifications.OnNext(Unit.Default);
                 }
 
-                return Disposable.Create(() =>
-                {
-                    if (Interlocked.Decrement(ref _changeNotificationsDelayed) == 0)
-                    {
-                        _startDelayNotifications.OnNext(Unit.Default);
-                    }
-                });
+                return Disposable.Create(
+                    () =>
+                        {
+                            if (Interlocked.Decrement(ref this._changeNotificationsDelayed) == 0)
+                            {
+                                this._startDelayNotifications.OnNext(Unit.Default);
+                            }
+                        });
             }
 
             public void RaisePropertyChanging(string propertyName)
             {
-                if (!AreChangeNotificationsEnabled())
+                if (!this.AreChangeNotificationsEnabled())
+                {
                     return;
+                }
 
-                var changing = new ReactivePropertyChangingEventArgs<TSender>(_sender, propertyName);
-                _sender.RaisePropertyChanging(changing);
+                var changing = new ReactivePropertyChangingEventArgs<TSender>(this._sender, propertyName);
+                this._sender.RaisePropertyChanging(changing);
 
-                NotifyObservable(changing, _changingSubject);
+                this.NotifyObservable(changing, this._changingSubject);
             }
 
             public void RaisePropertyChanged(string propertyName)
             {
-                if (!AreChangeNotificationsEnabled())
+                if (!this.AreChangeNotificationsEnabled())
+                {
                     return;
+                }
 
-                var changed = new ReactivePropertyChangedEventArgs<TSender>(_sender, propertyName);
-                _sender.RaisePropertyChanged(changed);
+                var changed = new ReactivePropertyChangedEventArgs<TSender>(this._sender, propertyName);
+                this._sender.RaisePropertyChanged(changed);
 
-                NotifyObservable(changed, _changedSubject);
+                this.NotifyObservable(changed, this._changedSubject);
             }
 
             private void NotifyObservable<T>(T item, ISubject<T> subject)
@@ -301,12 +301,13 @@ namespace RxLite
                 }
                 catch (Exception ex)
                 {
-                    _thrownExceptions.OnNext(ex);
+                    this._thrownExceptions.OnNext(ex);
                 }
             }
         }
 
-        private interface IExtensionState<out TSender> where TSender : IReactiveObject
+        private interface IExtensionState<out TSender>
+            where TSender : IReactiveObject
         {
             IObservable<IReactivePropertyChangedEventArgs<TSender>> Changing { get; }
 

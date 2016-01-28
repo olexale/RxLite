@@ -36,7 +36,6 @@
   <ItemGroup>
     <Compile Include="CompatMixins.cs" />
     <Compile Include="ContactStubs.cs" />
-    <Compile Include="ReactiveCollectionMixins.cs" />
     <Compile Include="ExpressionMixins.cs" />
     <Compile Include="ExpressionRewriter.cs" />
     <Compile Include="INPCObservableForProperty.cs" />
@@ -49,7 +48,6 @@
     <Compile Include="POCOObservableForProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReactiveCommand.cs" />
-    <Compile Include="ReactiveList.cs" />
     <Compile Include="ReactiveNotifyPropertyChangedMixin.cs" />
     <Compile Include="ReactiveObject.cs" />
     <Compile Include="RefcountDisposeWrapper.cs" />

@@ -18,11 +18,11 @@ namespace RxLite
                 switch (node.NodeType)
                 {
                     case ExpressionType.Index:
-                        var indexExpr = (IndexExpression) node;
+                        var indexExpr = (IndexExpression)node;
                         if (indexExpr.Object.NodeType != ExpressionType.Parameter)
                         {
-                            expressions.Add(indexExpr.Update(Expression.Parameter(indexExpr.GetParent().Type),
-                                indexExpr.Arguments));
+                            expressions.Add(
+                                indexExpr.Update(Expression.Parameter(indexExpr.GetParent().Type), indexExpr.Arguments));
                         }
                         else
                         {
@@ -31,7 +31,7 @@ namespace RxLite
                         node = indexExpr.Object;
                         break;
                     case ExpressionType.MemberAccess:
-                        var memberExpr = (MemberExpression) node;
+                        var memberExpr = (MemberExpression)node;
                         if (memberExpr.Expression.NodeType != ExpressionType.Parameter)
                         {
                             expressions.Add(memberExpr.Update(Expression.Parameter(memberExpr.GetParent().Type)));
@@ -56,14 +56,14 @@ namespace RxLite
             switch (expression.NodeType)
             {
                 case ExpressionType.Index:
-                    info = ((IndexExpression) expression).Indexer;
+                    info = ((IndexExpression)expression).Indexer;
                     break;
                 case ExpressionType.MemberAccess:
-                    info = ((MemberExpression) expression).Member;
+                    info = ((MemberExpression)expression).Member;
                     break;
                 case ExpressionType.Convert:
                 case ExpressionType.ConvertChecked:
-                    return GetMemberInfo(((UnaryExpression) expression).Operand);
+                    return GetMemberInfo(((UnaryExpression)expression).Operand);
                 default:
                     throw new NotSupportedException($"Unsupported expression type: '{expression.NodeType}'");
             }
@@ -75,9 +75,9 @@ namespace RxLite
             switch (expression.NodeType)
             {
                 case ExpressionType.Index:
-                    return ((IndexExpression) expression).Object;
+                    return ((IndexExpression)expression).Object;
                 case ExpressionType.MemberAccess:
-                    return ((MemberExpression) expression).Expression;
+                    return ((MemberExpression)expression).Expression;
                 default:
                     throw new NotSupportedException($"Unsupported expression type: '{expression.NodeType}'");
             }
@@ -86,8 +86,10 @@ namespace RxLite
         public static object[] GetArgumentsArray(this Expression expression)
         {
             return expression.NodeType == ExpressionType.Index
-                ? ((IndexExpression) expression).Arguments.Cast<ConstantExpression>().Select(c => c.Value).ToArray()
-                : null;
+                       ? ((IndexExpression)expression).Arguments.Cast<ConstantExpression>()
+                                                      .Select(c => c.Value)
+                                                      .ToArray()
+                       : null;
         }
     }
 }
