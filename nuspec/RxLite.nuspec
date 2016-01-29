@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>RxLite</id>
-        <version>0.0.1</version>
+        <version>0.0.2</version>
         <authors>Olexandr Leuschenko</authors>
         <projectUrl>https://github.com/OlexaLe/RxLite</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -11,8 +11,7 @@ Project main goal is to keep limited subset of ReactiveUI features:
 - this.WhenAny, this.WhenAnyValue, this.WhenAnyObservable
 - ObservableAsPropertyHelper, ToProperty
 - ReactiveObject, this.RaiseAndSetIfChanged
-- ReactiveCommand, ReactiveAsyncCommand
-- ReactiveList</description>
+- ReactiveCommand, ReactiveAsyncCommand</description>
         <tags>Rx Reactive</tags>
         <dependencies>
             <dependency id="Rx-Interfaces" version="2.2.5" />
